@@ -188,7 +188,7 @@ h1 small{
 .rb.total .rb-num{ color: var(--ink); }
 
 /* ---------- FILTER BAR (post submit) ---------- */
-#filterBar{ display:none; margin-bottom: 18px; }
+#filterBar{ display:block; margin-bottom: 18px; }
 .f-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 14px; }
 .f-chip{
   font-family:'JetBrains Mono', monospace;
@@ -326,15 +326,13 @@ footer{
     <div class="plate-bolts"><span></span><span></span><span></span><span></span></div>
     <div class="eyebrow"><span class="dot"></span> UF0607 · CÁLCULO DE ELEMENTOS DE UNIÓN</div>
     <h1>Examen tipo test
-      <small>129 preguntas con 4 opciones cada una · orden aleatorio en cada intento</small>
+      <small>129 preguntas con 4 opciones cada una · se corrige al instante al responder</small>
     </h1>
     <div class="gauge"><div class="gauge-fill" id="progFill"></div></div>
     <div class="gauge-readout" id="progText">0 / 129 respondidas</div>
   </header>
 
   <div class="sticky-actions">
-    <button class="btn btn-primary" id="btnSubmit">Corregir examen</button>
-    <button class="btn btn-ghost" id="btnReview" style="display:none;">Ir a revisión</button>
     <button class="btn btn-ghost" id="btnRestart">↺ Nuevo intento</button>
   </div>
 
@@ -343,6 +341,7 @@ footer{
   <div id="filterBar">
     <div class="f-row" id="filterChips">
       <button class="f-chip active" data-filter="todas">Todas</button>
+      <button class="f-chip" data-filter="correctas">Solo correctas</button>
       <button class="f-chip" data-filter="falladas">Solo falladas</button>
       <button class="f-chip" data-filter="sinResponder">Sin responder</button>
     </div>
@@ -353,7 +352,7 @@ footer{
   <form id="examForm"></form>
 
   <footer>
-    Examen autogenerado a partir de las preguntas seleccionadas de preguntas_examen_UF0607.md · corrección y datos solo en este navegador
+    Examen autogenerado a partir de las preguntas seleccionadas de preguntas_examen_UF0607.md · cada pregunta se corrige al instante · corrección y datos solo en este navegador
   </footer>
 </div>
 
@@ -535,7 +534,7 @@ const BANCO = {
 
 </script>
 <script>
-// app-test.js — lógica del examen tipo test UF0607
+// app-test.js — lógica del examen tipo test UF0607 (corrección instantánea por pregunta)
 (function(){
   "use strict";
 
@@ -578,8 +577,7 @@ const BANCO = {
 
   // ---- Construir el examen completo (orden de preguntas aleatorio, opciones fijas por intento) ----
   let examQuestions = [];
-  let answers = {};      // id -> opción elegida (texto)
-  let submitted = false;
+  let answers = {};      // id -> opción elegida (texto), se fija en cuanto se responde (no se puede cambiar)
 
   function buildExam(){
     const order = shuffle(ALL);
@@ -588,23 +586,19 @@ const BANCO = {
       options: buildOptions(q)
     }));
     answers = {};
-    submitted = false;
   }
 
   // ---- DOM refs ----
   const $ = sel => document.querySelector(sel);
   const examForm = $("#examForm");
-  const summaryBar = $("#summaryBar");
   const progFill = $("#progFill");
   const progText = $("#progText");
   const resultsPanel = $("#resultsPanel");
-  const btnSubmit = $("#btnSubmit");
   const btnRestart = $("#btnRestart");
-  const btnReview = $("#btnReview");
   const filterChips = $("#filterChips");
   const jumpNav = $("#jumpNav");
 
-  let activeFilter = "todas"; // todas | sinResponder | falladas
+  let activeFilter = "todas"; // todas | sinResponder | falladas | correctas
 
   function letterFor(i){ return ["A","B","C","D"][i]; }
 
@@ -619,9 +613,10 @@ const BANCO = {
       card.style.borderLeftColor = q.color;
 
       const chosen = answers[q.id];
-      const isCorrect = submitted ? (chosen === q.r) : null;
-      if(submitted){
-        card.classList.add(isCorrect ? "is-correct" : (chosen ? "is-wrong" : "is-blank"));
+      const answered = !!chosen;
+      const isCorrect = answered ? (chosen === q.r) : null;
+      if(answered){
+        card.classList.add(isCorrect ? "is-correct" : "is-wrong");
       }
 
       const tag = document.createElement("div");
@@ -645,26 +640,26 @@ const BANCO = {
         optWrap.className = "opt";
         optWrap.dataset.value = opt;
 
-        if(submitted){
+        if(answered){
+          optWrap.classList.add("locked");
           if(opt === q.r) optWrap.classList.add("correct-opt");
           else if(opt === chosen) optWrap.classList.add("wrong-opt");
-          optWrap.classList.add("locked");
-        } else if(chosen === opt){
-          optWrap.classList.add("selected");
         }
 
         optWrap.innerHTML = `
           <span class="opt-letter">${letterFor(oi)}</span>
           <span class="opt-text">${opt}</span>
-          <span class="opt-mark">${submitted ? (opt === q.r ? "✓" : (opt === chosen ? "✕" : "")) : ""}</span>
+          <span class="opt-mark">${answered ? (opt === q.r ? "✓" : (opt === chosen ? "✕" : "")) : ""}</span>
         `;
 
-        if(!submitted){
+        if(!answered){
           optWrap.addEventListener("click", () => {
+            if(answers[q.id]) return; // ya respondida, no se puede cambiar
             answers[q.id] = opt;
-            renderOptionsOnly(card, q);
+            renderQuestionCard(card, q);
             renderSummary();
             renderJumpNav();
+            applyFilter();
           });
         }
 
@@ -673,18 +668,16 @@ const BANCO = {
 
       card.appendChild(opts);
 
-      if(submitted){
-        const fb = document.createElement("div");
-        fb.className = "q-feedback";
+      const fb = document.createElement("div");
+      fb.className = "q-feedback";
+      if(answered){
         if(isCorrect){
           fb.innerHTML = `<span class="fb-ok">✓ Correcta</span>`;
-        } else if(chosen){
-          fb.innerHTML = `<span class="fb-bad">✕ Incorrecta</span> — Respuesta correcta: <strong>${q.r}</strong>`;
         } else {
-          fb.innerHTML = `<span class="fb-blank">— Sin responder</span> — Respuesta correcta: <strong>${q.r}</strong>`;
+          fb.innerHTML = `<span class="fb-bad">✕ Incorrecta</span> — Respuesta correcta: <strong>${q.r}</strong>`;
         }
-        card.appendChild(fb);
       }
+      card.appendChild(fb);
 
       examForm.appendChild(card);
 
@@ -703,11 +696,31 @@ const BANCO = {
     applyFilter();
   }
 
-  function renderOptionsOnly(card, q){
+  // Re-renderiza solo una tarjeta (tras responder), para feedback instantáneo sin recrear todo el DOM
+  function renderQuestionCard(card, q){
+    const chosen = answers[q.id];
+    const isCorrect = chosen === q.r;
+    card.classList.add(isCorrect ? "is-correct" : "is-wrong");
+
     const opts = card.querySelectorAll(".opt");
-    opts.forEach(o => {
-      o.classList.toggle("selected", o.dataset.value === answers[q.id]);
+    opts.forEach(optWrap => {
+      const opt = optWrap.dataset.value;
+      optWrap.classList.add("locked");
+      if(opt === q.r) optWrap.classList.add("correct-opt");
+      else if(opt === chosen) optWrap.classList.add("wrong-opt");
+      const mark = optWrap.querySelector(".opt-mark");
+      mark.textContent = opt === q.r ? "✓" : (opt === chosen ? "✕" : "");
+      // clonar para quitar el listener de click
+      const clone = optWrap.cloneNode(true);
+      optWrap.replaceWith(clone);
     });
+
+    let fb = card.querySelector(".q-feedback");
+    if(isCorrect){
+      fb.innerHTML = `<span class="fb-ok">✓ Correcta</span>`;
+    } else {
+      fb.innerHTML = `<span class="fb-bad">✕ Incorrecta</span> — Respuesta correcta: <strong>${q.r}</strong>`;
+    }
   }
 
   function renderJumpNav(){
@@ -715,46 +728,38 @@ const BANCO = {
     btns.forEach((btn, idx) => {
       const q = examQuestions[idx];
       btn.classList.remove("done", "blank", "correct", "wrong");
-      if(submitted){
-        const chosen = answers[q.id];
-        if(chosen === q.r) btn.classList.add("correct");
-        else if(chosen) btn.classList.add("wrong");
-        else btn.classList.add("blank");
-      } else if(answers[q.id]){
-        btn.classList.add("done");
-      }
+      const chosen = answers[q.id];
+      if(chosen === q.r) btn.classList.add("correct");
+      else if(chosen) btn.classList.add("wrong");
+      else btn.classList.add("blank");
     });
   }
 
   function renderSummary(){
     const total = examQuestions.length;
     const answered = Object.keys(answers).length;
+    const correct = examQuestions.filter(q => answers[q.id] === q.r).length;
+    const wrong = examQuestions.filter(q => answers[q.id] && answers[q.id] !== q.r).length;
+    const blank = total - answered;
     const pct = total ? Math.round((answered/total)*100) : 0;
+    const nota = total ? (correct / total * 10).toFixed(1) : "0.0";
+
     progFill.style.width = pct + "%";
     progText.textContent = `${answered} / ${total} respondidas`;
 
-    if(submitted){
-      const correct = examQuestions.filter(q => answers[q.id] === q.r).length;
-      const wrong = examQuestions.filter(q => answers[q.id] && answers[q.id] !== q.r).length;
-      const blank = total - correct - wrong;
-      const nota = total ? (correct / total * 10).toFixed(1) : "0.0";
-
-      resultsPanel.style.display = "flex";
-      resultsPanel.innerHTML = `
-        <div class="result-grade">
-          <div class="grade-num">${nota}</div>
-          <div class="grade-lbl">sobre 10</div>
-        </div>
-        <div class="result-breakdown">
-          <div class="rb correct"><span class="rb-num">${correct}</span><span class="rb-lbl">Correctas</span></div>
-          <div class="rb wrong"><span class="rb-num">${wrong}</span><span class="rb-lbl">Falladas</span></div>
-          <div class="rb blank"><span class="rb-num">${blank}</span><span class="rb-lbl">En blanco</span></div>
-          <div class="rb total"><span class="rb-num">${total}</span><span class="rb-lbl">Total</span></div>
-        </div>
-      `;
-    } else {
-      resultsPanel.style.display = "none";
-    }
+    resultsPanel.style.display = "flex";
+    resultsPanel.innerHTML = `
+      <div class="result-grade">
+        <div class="grade-num">${nota}</div>
+        <div class="grade-lbl">sobre 10</div>
+      </div>
+      <div class="result-breakdown">
+        <div class="rb correct"><span class="rb-num">${correct}</span><span class="rb-lbl">Correctas</span></div>
+        <div class="rb wrong"><span class="rb-num">${wrong}</span><span class="rb-lbl">Falladas</span></div>
+        <div class="rb blank"><span class="rb-num">${blank}</span><span class="rb-lbl">Sin responder</span></div>
+        <div class="rb total"><span class="rb-num">${total}</span><span class="rb-lbl">Total</span></div>
+      </div>
+    `;
   }
 
   function applyFilter(){
@@ -764,7 +769,8 @@ const BANCO = {
       const chosen = answers[q.id];
       let show = true;
       if(activeFilter === "sinResponder") show = !chosen;
-      if(activeFilter === "falladas") show = submitted && chosen && chosen !== q.r;
+      if(activeFilter === "falladas") show = chosen && chosen !== q.r;
+      if(activeFilter === "correctas") show = chosen === q.r;
       card.style.display = show ? "" : "none";
     });
   }
@@ -779,41 +785,20 @@ const BANCO = {
     applyFilter();
   });
 
-  // ---- Submit / restart ----
-  btnSubmit.addEventListener("click", () => {
-    const total = examQuestions.length;
-    const answered = Object.keys(answers).length;
-    if(answered < total){
-      const missing = total - answered;
-      const ok = confirm(`Te faltan ${missing} pregunta(s) por responder. ¿Quieres corregir el examen igualmente?`);
+  // ---- Restart ----
+  btnRestart.addEventListener("click", () => {
+    const answeredCount = Object.keys(answers).length;
+    if(answeredCount > 0){
+      const ok = confirm("¿Seguro que quieres reiniciar el examen? Se perderán las respuestas actuales y se generará un nuevo orden de preguntas y opciones.");
       if(!ok) return;
     }
-    submitted = true;
-    renderExam();
-    renderSummary();
-    btnSubmit.style.display = "none";
-    btnReview.style.display = "";
-    document.getElementById("filterBar").style.display = "block";
-    window.scrollTo({top:0, behavior:"smooth"});
-  });
-
-  btnRestart.addEventListener("click", () => {
-    const ok = confirm("¿Seguro que quieres reiniciar el examen? Se perderán las respuestas actuales y se generará un nuevo orden de preguntas y opciones.");
-    if(!ok) return;
     buildExam();
-    btnSubmit.style.display = "";
-    btnReview.style.display = "none";
-    document.getElementById("filterBar").style.display = "none";
     activeFilter = "todas";
     filterChips.querySelectorAll(".f-chip").forEach(c => c.classList.remove("active"));
     filterChips.querySelector('[data-filter="todas"]').classList.add("active");
     renderExam();
     renderSummary();
     window.scrollTo({top:0, behavior:"smooth"});
-  });
-
-  btnReview.addEventListener("click", () => {
-    document.getElementById("filterBar").scrollIntoView({behavior:"smooth", block:"start"});
   });
 
   // ---- Init ----
