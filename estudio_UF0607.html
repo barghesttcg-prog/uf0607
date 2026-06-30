@@ -3,26 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Taller UF0607 · Repaso de elementos de unión</title>
+<title>Examen tipo test · UF0607</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#171a1f;
-  --bg-2:#1d2128;
   --panel:#22262e;
   --panel-2:#262b34;
-  --line:#33394420;
   --steel:#3a4150;
-  --steel-light:#4c5567;
   --ink:#e9ebef;
   --ink-dim:#9aa1ad;
   --ink-faint:#646c7a;
   --arc:#ff6a1a;
   --arc-glow:#ff9a52;
   --ok:#3ecf8e;
+  --ok-bg:#16241d;
   --bad:#ef5b5b;
+  --bad-bg:#2a1c1c;
   --warn:#e2b13c;
   --shadow: 0 18px 40px -12px rgba(0,0,0,0.55);
   --radius: 14px;
@@ -40,18 +39,19 @@ body{
   font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  padding-bottom: 90px;
 }
 .wrap{
-  max-width: 980px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 28px 20px 80px;
+  padding: 28px 20px 40px;
 }
 
 /* ---------- HEADER ---------- */
 header.top{
   position: relative;
   padding: 22px 24px 24px;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
   border-radius: var(--radius);
   background: linear-gradient(165deg, var(--panel) 0%, #1a1d23 100%);
   border: 1px solid #ffffff0d;
@@ -74,51 +74,35 @@ header.top::before{
 .plate-bolts span:nth-child(3){bottom:12px; left:12px;}
 .plate-bolts span:nth-child(4){bottom:12px; right:12px;}
 
-.title-row{
-  display:flex; align-items:flex-start; justify-content:space-between; gap:18px;
-  flex-wrap: wrap;
-  position:relative; z-index:1;
-}
 .eyebrow{
   font-family:'JetBrains Mono', monospace;
   font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
   color: var(--arc-glow);
   display:flex; align-items:center; gap:8px;
   margin-bottom: 6px;
+  position:relative; z-index:1;
 }
 .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--arc); box-shadow:0 0 8px var(--arc);}
 h1{
   font-family:'Oswald', sans-serif;
   font-weight:700;
-  font-size: clamp(26px, 4vw, 36px);
+  font-size: clamp(24px, 4vw, 32px);
   letter-spacing: .01em;
   margin: 0 0 6px;
   text-transform: uppercase;
+  position:relative; z-index:1;
 }
 h1 small{
   display:block;
   font-family:'Inter',sans-serif;
   font-weight:500;
   text-transform:none;
-  font-size: 14.5px;
+  font-size: 14px;
   color: var(--ink-dim);
   letter-spacing:0;
   margin-top:4px;
 }
-.stat-rivet{
-  font-family:'JetBrains Mono', monospace;
-  text-align:right;
-  flex-shrink:0;
-}
-.stat-rivet .num{
-  font-size: 34px; font-weight:700; color:var(--ink);
-  line-height:1;
-}
-.stat-rivet .lbl{
-  font-size:11px; color:var(--ink-faint); letter-spacing:.08em; text-transform:uppercase;
-}
 
-/* ---------- GAUGE BAR (progress) ---------- */
 .gauge{
   position:relative; z-index:1;
   margin-top:18px;
@@ -134,254 +118,184 @@ h1 small{
   width:0%;
   background: linear-gradient(90deg, #ff6a1a, #ffb347);
   box-shadow: 0 0 12px #ff6a1a80;
-  transition: width .5s cubic-bezier(.4,0,.2,1);
+  transition: width .4s ease;
   border-radius: 6px;
 }
 .gauge-readout{
   position:relative; z-index:1;
-  display:flex; justify-content:space-between;
   font-family:'JetBrains Mono', monospace;
   font-size:11px; color:var(--ink-faint);
   margin-top:6px;
   letter-spacing:.05em;
 }
 
-/* ---------- MODE SWITCH ---------- */
-.modes{
-  display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;
+/* ---------- STICKY ACTION BAR ---------- */
+.sticky-actions{
+  position: sticky; top: 0; z-index: 50;
+  display:flex; gap:10px; align-items:center;
+  padding: 10px 0 14px;
+  margin-bottom: 8px;
+  background: linear-gradient(180deg, var(--bg) 80%, transparent);
 }
-.mode-btn{
+.btn{
   font-family:'JetBrains Mono', monospace;
-  font-size:12.5px; font-weight:600; letter-spacing:.04em;
-  padding:10px 16px;
-  background: var(--panel);
-  border:1px solid #ffffff0f;
-  color:var(--ink-dim);
-  border-radius: 9px;
-  cursor:pointer;
-  transition: all .15s ease;
-  text-transform:uppercase;
-  display:flex; align-items:center; gap:7px;
+  font-weight:700; font-size:13px; letter-spacing:.05em; text-transform:uppercase;
+  padding:13px 22px;
+  border-radius:10px; border:none; cursor:pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
 }
-.mode-btn:hover{ color:var(--ink); border-color:#ffffff25; background:var(--panel-2); }
-.mode-btn.active{
+.btn:active{ transform: translateY(1px); }
+.btn-primary{
   background: linear-gradient(160deg, #ff6a1a, #d6500a);
-  color:#fff; border-color:transparent;
+  color:#fff;
   box-shadow: 0 4px 14px -4px #ff6a1a70;
 }
-
-/* ---------- UD FILTER CHIPS ---------- */
-.chips{
-  display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;
+.btn-ghost{
+  background: var(--panel);
+  color: var(--ink-dim);
+  border:1px solid #ffffff15;
 }
-.chip{
+.btn-ghost:hover{ color:var(--ink); border-color:#ffffff35; }
+
+/* ---------- RESULTS PANEL ---------- */
+.results{
+  display:none;
+  background: linear-gradient(160deg, var(--panel) 0%, #1a1d23 100%);
+  border: 1px solid #ffffff10;
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow);
+  align-items:center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.result-grade{ text-align:center; flex-shrink:0; }
+.grade-num{
+  font-family:'Oswald', sans-serif; font-size:48px; font-weight:700;
+  color: var(--arc-glow); line-height:1;
+}
+.grade-lbl{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-faint); text-transform:uppercase; margin-top:4px;}
+.result-breakdown{
+  display:flex; gap:22px; flex-wrap:wrap; flex:1;
+}
+.rb{ display:flex; flex-direction:column; }
+.rb-num{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; }
+.rb-lbl{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em;}
+.rb.correct .rb-num{ color: var(--ok); }
+.rb.wrong .rb-num{ color: var(--bad); }
+.rb.blank .rb-num{ color: var(--warn); }
+.rb.total .rb-num{ color: var(--ink); }
+
+/* ---------- FILTER BAR (post submit) ---------- */
+#filterBar{ display:none; margin-bottom: 18px; }
+.f-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 14px; }
+.f-chip{
   font-family:'JetBrains Mono', monospace;
   font-size:12px; font-weight:600;
-  padding:7px 13px 7px 11px;
+  padding:7px 14px;
   border-radius:20px;
   border:1.5px solid var(--steel);
   background:var(--panel);
   color:var(--ink-dim);
   cursor:pointer;
-  display:flex; align-items:center; gap:7px;
-  transition: all .15s ease;
 }
-.chip .swatch{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.chip:hover{border-color:#ffffff40;}
-.chip.active{ color:#fff; background:var(--panel-2); }
-.chip .count{ color:var(--ink-faint); font-size:11px; }
-.chip.active .count{ color:#ffffffb0; }
+.f-chip.active{ color:#fff; background:var(--panel-2); border-color:#ffffff40; }
 
-/* ---------- CARD STAGE ---------- */
-.stage{
-  display:flex; flex-direction:column; align-items:center;
-}
-.card-zone{
-  width:100%;
-  max-width: 640px;
-  perspective: 1600px;
-}
-.card{
-  position:relative;
-  width:100%;
-  min-height: 320px;
-  cursor:pointer;
-}
-.card-inner{
-  position:relative;
-  width:100%; height:100%;
-  min-height:320px;
-  transition: transform .55s cubic-bezier(.4,.1,.2,1);
-  transform-style: preserve-3d;
-}
-.card.flipped .card-inner{ transform: rotateY(180deg); }
-.face{
-  position:absolute; inset:0;
-  backface-visibility:hidden;
-  border-radius: var(--radius);
-  padding: 30px 30px 26px;
-  display:flex; flex-direction:column;
-  background: linear-gradient(160deg, var(--panel) 0%, #1a1d23 100%);
-  border:1px solid #ffffff10;
-  box-shadow: var(--shadow);
-}
-.face::before{
-  content:"";
-  position:absolute; inset:0; border-radius:var(--radius);
-  background: repeating-linear-gradient(135deg, #ffffff02 0 2px, transparent 2px 14px);
-  pointer-events:none;
-}
-.face .corner{
-  position:absolute; width:8px; height:8px; border-radius:50%;
-  background: radial-gradient(circle at 35% 30%, #8a91a0, #1c1f25 70%);
-  box-shadow: inset 0 1px 1px #ffffff35, 0 1px 2px #00000080;
-}
-.face .corner.tl{top:10px;left:10px;} .face .corner.tr{top:10px;right:10px;}
-.face .corner.bl{bottom:10px;left:10px;} .face .corner.br{bottom:10px;right:10px;}
-
-.face-back{ transform: rotateY(180deg); }
-
-.card-tag{
-  font-family:'JetBrains Mono', monospace;
-  font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:18px; position:relative; z-index:1;
-}
-.card-tag .ud-label{ display:flex; align-items:center; gap:7px; }
-.card-tag .ud-dot{ width:7px;height:7px;border-radius:50%; }
-.card-tag .qnum{ color:var(--ink-faint); }
-
-.card-body{
-  flex:1;
-  display:flex; align-items:center;
-  font-family:'Inter', sans-serif;
-  font-size: 19px;
-  line-height:1.5;
-  font-weight:500;
-  position:relative; z-index:1;
-}
-.card-body.answer{
-  font-size:17px;
-  font-weight:400;
-  color: #d7dae0;
-}
-.card-hint{
-  font-family:'JetBrains Mono', monospace;
-  font-size:11px;
-  color: var(--ink-faint);
-  text-align:center;
-  margin-top:14px;
-  letter-spacing:.05em;
-  position:relative; z-index:1;
-}
-.answer-label{
-  font-family:'JetBrains Mono', monospace;
-  font-size:11px; letter-spacing:.1em;
-  color: var(--ok);
-  text-transform:uppercase;
-  margin-bottom:10px;
-  display:flex; align-items:center; gap:6px;
-  position:relative; z-index:1;
-}
-
-/* ---------- NAV CONTROLS ---------- */
-.nav-row{
-  display:flex; align-items:center; justify-content:center;
-  gap:14px; margin-top:24px;
-}
-.nav-btn{
-  width:46px; height:46px;
-  border-radius:50%;
+/* ---------- JUMP NAV ---------- */
+.jump-nav{
+  display:flex; flex-wrap:wrap; gap:6px;
+  margin-bottom: 22px;
+  padding: 14px;
   background: var(--panel);
-  border:1px solid #ffffff10;
-  color: var(--ink);
-  font-size:18px;
+  border-radius: 10px;
+  border: 1px solid #ffffff0a;
+}
+.jump-btn{
+  width:30px; height:30px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:600;
+  border-radius:6px; border:1px solid #ffffff15; background:#1c1f25; color:var(--ink-faint);
   cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition: all .15s ease;
 }
-.nav-btn:hover{ background:var(--panel-2); border-color:#ffffff30; transform: translateY(-1px); }
-.nav-btn:active{ transform: translateY(0); }
-.nav-btn:disabled{ opacity:.35; cursor:not-allowed; }
-.nav-btn.shuffle{ background: linear-gradient(160deg,#2a2f38,#1c1f25); }
+.jump-btn.done{ background:#2a2510; color:var(--warn); border-color:#e2b13c40; }
+.jump-btn.correct{ background:var(--ok-bg); color:var(--ok); border-color:#3ecf8e50; }
+.jump-btn.wrong{ background:var(--bad-bg); color:var(--bad); border-color:#ef5b5b50; }
+.jump-btn.blank{ background:#1c1f25; color:var(--ink-faint); border-color:#ffffff15; }
 
-.know-row{
-  display:flex; gap:10px; margin-top:0; width:100%; max-width:640px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height .25s ease, margin-top .25s ease;
-}
-.know-row.show{
-  margin-top: 18px;
-  max-height: 80px;
-}
-.know-btn{
-  flex:1;
-  font-family:'JetBrains Mono', monospace;
-  font-weight:700; font-size:13px; letter-spacing:.05em; text-transform:uppercase;
-  padding:13px 10px;
-  border-radius:10px; border:none; cursor:pointer;
-  transition: opacity .2s ease;
-  display:flex; align-items:center; justify-content:center; gap:7px;
-  opacity:0;
-  pointer-events:none;
-  flex-shrink:0;
-}
-.know-row.show .know-btn{ opacity:1; pointer-events:auto; }
-.know-btn.no{ background:#2a1f20; color:#f08a8a; border:1px solid #ef5b5b40; }
-.know-btn.no:hover{ background:#3a2426; }
-.know-btn.yes{ background:#1d2a24; color:#7fe3b4; border:1px solid #3ecf8e40; }
-.know-btn.yes:hover{ background:#243a30; }
-
-/* ---------- EMPTY / DONE STATE ---------- */
-.empty-state, .done-state{
-  text-align:center; padding: 50px 20px;
-  font-family:'JetBrains Mono', monospace;
-}
-.empty-state .big, .done-state .big{ font-size:46px; margin-bottom:14px; }
-.done-state h2{
-  font-family:'Oswald',sans-serif; text-transform:uppercase;
-  color:var(--ink); font-size:24px; margin:0 0 8px;
-}
-.done-state p{ color:var(--ink-dim); font-size:14px; margin:0 0 22px; }
-.done-btn{
-  font-family:'JetBrains Mono', monospace;
-  background: linear-gradient(160deg, #ff6a1a, #d6500a);
-  color:#fff; border:none; padding:13px 26px; border-radius:9px;
-  font-weight:700; letter-spacing:.04em; cursor:pointer; font-size:13px;
-  text-transform:uppercase;
-}
-
-/* ---------- SECTION LABELS ---------- */
-.sec-label{
-  font-family:'JetBrains Mono', monospace;
-  font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-  color: var(--ink-faint);
-  margin: 30px 0 12px;
-  display:flex; align-items:center; gap:10px;
-}
-.sec-label::after{ content:""; flex:1; height:1px; background:#ffffff10; }
-
-/* ---------- UD BREAKDOWN (stats panel) ---------- */
-.ud-grid{
-  display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
-  gap:10px;
-}
-.ud-card{
-  background:var(--panel);
-  border:1px solid #ffffff0d;
-  border-radius:10px;
-  padding:14px 14px 12px;
+/* ---------- QUESTION CARDS ---------- */
+.q-card{
+  background: linear-gradient(160deg, var(--panel) 0%, #1a1d23 100%);
+  border: 1px solid #ffffff0d;
   border-left: 3px solid var(--steel);
+  border-radius: var(--radius);
+  padding: 22px 24px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 20px -10px rgba(0,0,0,0.4);
 }
-.ud-card .name{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-dim); margin-bottom:8px; letter-spacing:.03em; }
-.ud-card .bar-bg{ height:6px; border-radius:4px; background:#14161a; overflow:hidden; margin-bottom:7px;}
-.ud-card .bar-fill{ height:100%; border-radius:4px; transition: width .4s ease; }
-.ud-card .nums{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-faint); display:flex; justify-content:space-between;}
+.q-card.is-correct{ background: linear-gradient(160deg, #1a221d 0%, #161a17 100%); }
+.q-card.is-wrong{ background: linear-gradient(160deg, #241a1a 0%, #1a1616 100%); }
+.q-tag{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  display:flex; align-items:center; justify-content:space-between;
+  color: var(--ink-faint);
+  margin-bottom:12px;
+  flex-wrap:wrap; gap:8px;
+}
+.q-ud{ display:flex; align-items:center; gap:6px; }
+.ud-dot{ width:7px;height:7px;border-radius:50%; }
+.q-text{
+  font-size:16.5px; font-weight:500; line-height:1.5;
+  margin-bottom:16px;
+}
+.q-options{ display:flex; flex-direction:column; gap:8px; }
+.opt{
+  display:flex; align-items:center; gap:12px;
+  padding: 11px 14px;
+  border-radius: 9px;
+  border: 1.5px solid #ffffff12;
+  background: #1c1f25;
+  cursor:pointer;
+  transition: all .12s ease;
+}
+.opt:hover{ border-color:#ffffff30; background:#21252d; }
+.opt.selected{ border-color: var(--arc); background: #2a2014; }
+.opt-letter{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12px;
+  width:24px; height:24px; flex-shrink:0;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:#14161a; color:var(--ink-dim);
+  border:1px solid #ffffff15;
+}
+.opt.selected .opt-letter{ background: var(--arc); color:#fff; border-color:transparent; }
+.opt-text{ font-size:14.5px; line-height:1.4; flex:1; color:#d7dae0; }
+.opt-mark{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px; width:18px; text-align:center; flex-shrink:0;}
+
+.opt.locked{ cursor:default; }
+.opt.correct-opt{ border-color: var(--ok); background: var(--ok-bg); }
+.opt.correct-opt .opt-letter{ background:var(--ok); color:#0c1a14; border-color:transparent; }
+.opt.correct-opt .opt-mark{ color: var(--ok); }
+.opt.wrong-opt{ border-color: var(--bad); background: var(--bad-bg); }
+.opt.wrong-opt .opt-letter{ background:var(--bad); color:#2a0d0d; border-color:transparent; }
+.opt.wrong-opt .opt-mark{ color: var(--bad); }
+
+.q-feedback{
+  margin-top:14px;
+  padding-top:14px;
+  border-top: 1px dashed #ffffff15;
+  font-family:'Inter', sans-serif;
+  font-size:13.5px;
+  color: var(--ink-dim);
+  line-height:1.5;
+}
+.fb-ok{ color: var(--ok); font-weight:700; font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; margin-right:4px;}
+.fb-bad{ color: var(--bad); font-weight:700; font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; margin-right:4px;}
+.fb-blank{ color: var(--warn); font-weight:700; font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; margin-right:4px;}
 
 footer{
   text-align:center;
-  margin-top: 50px;
+  margin-top: 30px;
   font-family:'JetBrains Mono', monospace;
   font-size: 11px;
   color: var(--ink-faint);
@@ -389,19 +303,17 @@ footer{
 }
 
 @media (max-width: 560px){
-  .wrap{ padding: 16px 12px 60px; }
+  .wrap{ padding: 16px 12px 40px; }
   header.top{ padding:18px 16px 18px; }
-  h1{ font-size: 22px; }
-  .stat-rivet .num{ font-size:26px; }
-  .face{ padding:22px 18px 20px; }
-  .card-body{ font-size:17px; }
-  .mode-btn{ font-size:11.5px; padding:9px 12px; flex:1; justify-content:center; }
-  .card, .card-inner, .face{ min-height: 260px; }
+  h1{ font-size: 21px; }
+  .q-card{ padding:18px 16px 16px; }
+  .q-text{ font-size:15.5px; }
+  .opt-text{ font-size:14px; }
+  .btn{ padding:12px 16px; font-size:12px; flex:1; }
+  .results{ flex-direction:column; align-items:flex-start; gap:16px;}
 }
 
-.sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
 :focus-visible{ outline: 2px solid var(--arc-glow); outline-offset: 2px; }
-
 @media (prefers-reduced-motion: reduce){
   *{ transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
@@ -412,77 +324,36 @@ footer{
 
   <header class="top">
     <div class="plate-bolts"><span></span><span></span><span></span><span></span></div>
-    <div class="title-row">
-      <div>
-        <div class="eyebrow"><span class="dot"></span> UF0607 · CÁLCULO DE ELEMENTOS DE UNIÓN</div>
-        <h1>Taller de repaso
-          <small>129 preguntas seleccionadas para el examen tipo test · 5 unidades didácticas</small>
-        </h1>
-      </div>
-      <div class="stat-rivet">
-        <div class="num" id="hdrCount">129</div>
-        <div class="lbl" id="hdrLabel">en cola</div>
-      </div>
-    </div>
-    <div class="gauge"><div class="gauge-fill" id="gaugeFill"></div></div>
-    <div class="gauge-readout">
-      <span id="gaugeText">0 / 129 repasadas</span>
-      <span id="gaugePct">0%</span>
-    </div>
+    <div class="eyebrow"><span class="dot"></span> UF0607 · CÁLCULO DE ELEMENTOS DE UNIÓN</div>
+    <h1>Examen tipo test
+      <small>129 preguntas con 4 opciones cada una · orden aleatorio en cada intento</small>
+    </h1>
+    <div class="gauge"><div class="gauge-fill" id="progFill"></div></div>
+    <div class="gauge-readout" id="progText">0 / 129 respondidas</div>
   </header>
 
-  <div class="modes">
-    <button class="mode-btn active" data-mode="repaso">📖 Repaso libre</button>
-    <button class="mode-btn" data-mode="dudas">🔧 Solo dudas</button>
-    <button class="mode-btn" data-mode="examen">⏱️ Modo examen</button>
+  <div class="sticky-actions">
+    <button class="btn btn-primary" id="btnSubmit">Corregir examen</button>
+    <button class="btn btn-ghost" id="btnReview" style="display:none;">Ir a revisión</button>
+    <button class="btn btn-ghost" id="btnRestart">↺ Nuevo intento</button>
   </div>
 
-  <div class="chips" id="udChips"></div>
+  <div class="results" id="resultsPanel"></div>
 
-  <div class="stage" id="stage">
-    <div class="card-zone">
-      <div class="card" id="card">
-        <div class="card-inner" id="cardInner">
-          <div class="face face-front">
-            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-            <div class="card-tag">
-              <span class="ud-label"><span class="ud-dot" id="tagDotFront"></span><span id="tagUdFront"></span></span>
-              <span class="qnum" id="tagNumFront"></span>
-            </div>
-            <div class="card-body" id="qText"></div>
-            <div class="card-hint">▾ Toca la placa para ver la respuesta ▾</div>
-          </div>
-          <div class="face face-back">
-            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-            <div class="card-tag">
-              <span class="ud-label"><span class="ud-dot" id="tagDotBack"></span><span id="tagUdBack"></span></span>
-              <span class="qnum" id="tagNumBack"></span>
-            </div>
-            <div class="answer-label">✓ Respuesta</div>
-            <div class="card-body answer" id="aText"></div>
-            <div class="card-hint">▾ Toca de nuevo para ver la pregunta ▾</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="know-row" id="knowRow">
-        <button class="know-btn no" id="btnNo">✕ Aún no la sé</button>
-        <button class="know-btn yes" id="btnYes">✓ Me la sé</button>
-      </div>
-
-      <div class="nav-row">
-        <button class="nav-btn" id="btnPrev" title="Anterior">←</button>
-        <button class="nav-btn shuffle" id="btnShuffle" title="Barajar">⤮</button>
-        <button class="nav-btn" id="btnNext" title="Siguiente">→</button>
-      </div>
+  <div id="filterBar">
+    <div class="f-row" id="filterChips">
+      <button class="f-chip active" data-filter="todas">Todas</button>
+      <button class="f-chip" data-filter="falladas">Solo falladas</button>
+      <button class="f-chip" data-filter="sinResponder">Sin responder</button>
     </div>
   </div>
 
-  <div class="sec-label">Avance por unidad</div>
-  <div class="ud-grid" id="udGrid"></div>
+  <div class="jump-nav" id="jumpNav"></div>
+
+  <form id="examForm"></form>
 
   <footer>
-    Ficha de estudio generada a partir de preguntas_examen_UF0607.md · datos guardados solo en este navegador
+    Examen autogenerado a partir de las preguntas seleccionadas de preguntas_examen_UF0607.md · corrección y datos solo en este navegador
   </footer>
 </div>
 
@@ -664,14 +535,13 @@ const BANCO = {
 
 </script>
 <script>
-// app.js — lógica del taller de repaso UF0607
+// app-test.js — lógica del examen tipo test UF0607
 (function(){
   "use strict";
 
-  const UD_KEYS = Object.keys(BANCO); // ud1..ud5
-  const STORAGE_KEY = "uf0607_repaso_v1";
+  const UD_KEYS = Object.keys(BANCO);
 
-  // ---- Construir lista plana de preguntas con metadatos de UD ----
+  // ---- Construir lista plana de preguntas con metadatos ----
   let ALL = [];
   UD_KEYS.forEach(key => {
     const ud = BANCO[key];
@@ -680,44 +550,6 @@ const BANCO = {
     });
   });
 
-  // ---- Estado persistido: { know: {id: true/false}, } ----
-  function loadState(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(raw) return JSON.parse(raw);
-    }catch(e){}
-    return { know: {} };
-  }
-  function saveState(){
-    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
-  }
-  let state = loadState();
-
-  // ---- App state ----
-  let mode = "repaso"; // repaso | dudas | examen
-  let activeUds = new Set(UD_KEYS); // filtro de chips
-  let deck = [];        // preguntas activas según modo+filtro
-  let pos = 0;           // índice actual en deck
-  let flipped = false;
-  let examOrder = [];     // orden barajado fijo para modo examen
-
-  // ---- DOM refs ----
-  const $ = sel => document.querySelector(sel);
-  const stage = $("#stage");
-  const card = $("#card");
-  const cardInner = $("#cardInner");
-  const knowRow = $("#knowRow");
-  const udChipsEl = $("#udChips");
-  const udGridEl = $("#udGrid");
-
-  const tagUdFront = $("#tagUdFront"), tagDotFront = $("#tagDotFront"), tagNumFront = $("#tagNumFront");
-  const tagUdBack = $("#tagUdBack"), tagDotBack = $("#tagDotBack"), tagNumBack = $("#tagNumBack");
-  const qText = $("#qText"), aText = $("#aText");
-
-  const gaugeFill = $("#gaugeFill"), gaugeText = $("#gaugeText"), gaugePct = $("#gaugePct");
-  const hdrCount = $("#hdrCount"), hdrLabel = $("#hdrLabel");
-
-  // ---- Helpers ----
   function shuffle(arr){
     const a = arr.slice();
     for(let i=a.length-1;i>0;i--){
@@ -727,286 +559,267 @@ const BANCO = {
     return a;
   }
 
-  function buildChips(){
-    udChipsEl.innerHTML = "";
-    const allChip = document.createElement("div");
-    allChip.className = "chip active";
-    allChip.dataset.key = "__all__";
-    allChip.innerHTML = `<span class="swatch" style="background:#9aa1ad"></span> Todas <span class="count">(${ALL.length})</span>`;
-    udChipsEl.appendChild(allChip);
+  // ---- Generar distractores: prioriza respuestas de la misma UD, completa con el resto si hace falta ----
+  function buildOptions(question){
+    const sameUd = ALL.filter(q => q.ud === question.ud && q.id !== question.id);
+    const others = ALL.filter(q => q.ud !== question.ud);
+    const pool = shuffle(sameUd).concat(shuffle(others));
+    const distractors = [];
+    const seen = new Set([question.r]);
+    for(const cand of pool){
+      if(distractors.length >= 3) break;
+      if(seen.has(cand.r)) continue;
+      seen.add(cand.r);
+      distractors.push(cand.r);
+    }
+    const options = shuffle([question.r, ...distractors]);
+    return options;
+  }
 
-    UD_KEYS.forEach(key => {
-      const ud = BANCO[key];
-      const chip = document.createElement("div");
-      chip.className = "chip active";
-      chip.dataset.key = key;
-      chip.innerHTML = `<span class="swatch" style="background:${ud.color}"></span> ${ud.abrev} <span class="count">(${ud.preguntas.length})</span>`;
-      udChipsEl.appendChild(chip);
-    });
+  // ---- Construir el examen completo (orden de preguntas aleatorio, opciones fijas por intento) ----
+  let examQuestions = [];
+  let answers = {};      // id -> opción elegida (texto)
+  let submitted = false;
 
-    udChipsEl.addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if(!chip) return;
-      const key = chip.dataset.key;
+  function buildExam(){
+    const order = shuffle(ALL);
+    examQuestions = order.map(q => ({
+      ...q,
+      options: buildOptions(q)
+    }));
+    answers = {};
+    submitted = false;
+  }
 
-      if(key === "__all__"){
-        const allActive = activeUds.size === UD_KEYS.length;
-        if(allActive){
-          activeUds = new Set(); // deselect all (edge case, but re-guard below)
-          activeUds = new Set(UD_KEYS); // never allow zero — toggle back to all
-        } else {
-          activeUds = new Set(UD_KEYS);
-        }
-      } else {
-        if(activeUds.has(key)){
-          if(activeUds.size > 1){ activeUds.delete(key); }
-        } else {
-          activeUds.add(key);
-        }
+  // ---- DOM refs ----
+  const $ = sel => document.querySelector(sel);
+  const examForm = $("#examForm");
+  const summaryBar = $("#summaryBar");
+  const progFill = $("#progFill");
+  const progText = $("#progText");
+  const resultsPanel = $("#resultsPanel");
+  const btnSubmit = $("#btnSubmit");
+  const btnRestart = $("#btnRestart");
+  const btnReview = $("#btnReview");
+  const filterChips = $("#filterChips");
+  const jumpNav = $("#jumpNav");
+
+  let activeFilter = "todas"; // todas | sinResponder | falladas
+
+  function letterFor(i){ return ["A","B","C","D"][i]; }
+
+  function renderExam(){
+    examForm.innerHTML = "";
+    jumpNav.innerHTML = "";
+
+    examQuestions.forEach((q, idx) => {
+      const card = document.createElement("div");
+      card.className = "q-card";
+      card.id = "q-" + q.id;
+      card.style.borderLeftColor = q.color;
+
+      const chosen = answers[q.id];
+      const isCorrect = submitted ? (chosen === q.r) : null;
+      if(submitted){
+        card.classList.add(isCorrect ? "is-correct" : (chosen ? "is-wrong" : "is-blank"));
       }
-      refreshChipStates();
-      rebuildDeck(true);
-    });
-  }
 
-  function refreshChipStates(){
-    const chips = udChipsEl.querySelectorAll(".chip");
-    chips.forEach(chip => {
-      const key = chip.dataset.key;
-      if(key === "__all__"){
-        chip.classList.toggle("active", activeUds.size === UD_KEYS.length);
-      } else {
-        chip.classList.toggle("active", activeUds.has(key));
-      }
-    });
-  }
-
-  function getKnowFlag(id){ return state.know[id] === true; }
-  function setKnowFlag(id, val){ state.know[id] = val; saveState(); }
-
-  function poolForFilter(){
-    return ALL.filter(q => activeUds.has(q.ud));
-  }
-
-  function rebuildDeck(resetPos){
-    let pool = poolForFilter();
-
-    if(mode === "dudas"){
-      pool = pool.filter(q => !getKnowFlag(q.id));
-    }
-
-    if(mode === "examen"){
-      // orden fijo barajado, recalculado solo si cambia el filtro o se pide nuevo barajo
-      examOrder = shuffle(pool);
-      deck = examOrder;
-    } else {
-      deck = pool;
-    }
-
-    if(resetPos !== false) pos = 0;
-    if(pos >= deck.length) pos = Math.max(0, deck.length - 1);
-    flipped = false;
-    renderCard();
-    renderProgress();
-    renderUdGrid();
-  }
-
-  function currentQ(){
-    return deck[pos];
-  }
-
-  function renderCard(){
-    cardInner.style.transition = "none";
-    card.classList.remove("flipped");
-    void cardInner.offsetWidth; // reflow para resetear sin animación
-    cardInner.style.transition = "";
-
-    flipped = false;
-    knowRow.classList.remove("show");
-
-    if(deck.length === 0){
-      renderEmptyOrDone();
-      return;
-    }
-
-    stage.querySelector(".card-zone").style.display = "";
-    const cardZoneEmptyMsg = stage.querySelector(".empty-msg");
-    if(cardZoneEmptyMsg) cardZoneEmptyMsg.remove();
-
-    const q = currentQ();
-    tagUdFront.textContent = q.udAbrev;
-    tagDotFront.style.background = q.color;
-    tagNumFront.textContent = "Pregunta " + q.n;
-    qText.textContent = q.p;
-
-    tagUdBack.textContent = q.udAbrev;
-    tagDotBack.style.background = q.color;
-    tagNumBack.textContent = "Pregunta " + q.n;
-    aText.textContent = q.r;
-
-    document.querySelectorAll(".face").forEach(f => f.style.borderLeft = `3px solid ${q.color}`);
-
-    $("#btnPrev").disabled = (pos === 0);
-    $("#btnNext").disabled = (pos === deck.length - 1);
-  }
-
-  function renderEmptyOrDone(){
-    const zone = stage.querySelector(".card-zone");
-    let msg = zone.querySelector(".empty-msg");
-    if(!msg){
-      msg = document.createElement("div");
-      msg.className = "empty-msg done-state";
-      zone.appendChild(msg);
-    }
-    card.style.display = "none";
-    knowRow.style.display = "none";
-    $(".nav-row") && (document.querySelector(".nav-row").style.display = "none");
-
-    if(mode === "dudas"){
-      msg.innerHTML = `<div class="big">🎉</div><h2>¡Sin dudas pendientes!</h2><p>Has marcado como "me la sé" todas las preguntas de este filtro.</p><button class="done-btn" id="resetDudasBtn">Reiniciar dudas de este filtro</button>`;
-      msg.querySelector("#resetDudasBtn").addEventListener("click", () => {
-        poolForFilter().forEach(q => setKnowFlag(q.id, false));
-        rebuildDeck(true);
-      });
-    } else {
-      msg.innerHTML = `<div class="big">⚙️</div><h2>No hay preguntas</h2><p>Selecciona al menos una unidad didáctica.</p>`;
-    }
-  }
-
-  function showCardZoneNormal(){
-    card.style.display = "";
-    knowRow.style.display = "";
-    document.querySelector(".nav-row").style.display = "";
-  }
-
-  function flipCard(){
-    if(deck.length === 0) return;
-    flipped = !flipped;
-    card.classList.toggle("flipped", flipped);
-    if(flipped && mode !== "examen"){
-      knowRow.classList.add("show");
-    } else if(!flipped){
-      knowRow.classList.remove("show");
-    } else if(flipped && mode === "examen"){
-      knowRow.classList.add("show");
-    }
-  }
-
-  function goTo(newPos){
-    if(deck.length === 0) return;
-    pos = Math.max(0, Math.min(deck.length - 1, newPos));
-    renderCard();
-  }
-
-  function renderProgress(){
-    const pool = poolForFilter();
-    const known = pool.filter(q => getKnowFlag(q.id)).length;
-    const total = pool.length;
-    const pct = total ? Math.round((known/total)*100) : 0;
-
-    gaugeFill.style.width = pct + "%";
-    gaugeText.textContent = `${known} / ${total} dominadas`;
-    gaugePct.textContent = pct + "%";
-
-    if(mode === "dudas"){
-      hdrCount.textContent = deck.length;
-      hdrLabel.textContent = "dudas pendientes";
-    } else if(mode === "examen"){
-      hdrCount.textContent = (deck.length ? (pos+1) : 0) + "/" + deck.length;
-      hdrLabel.textContent = "en el examen";
-    } else {
-      hdrCount.textContent = total;
-      hdrLabel.textContent = "en cola";
-    }
-  }
-
-  function renderUdGrid(){
-    udGridEl.innerHTML = "";
-    UD_KEYS.forEach(key => {
-      const ud = BANCO[key];
-      const known = ud.preguntas.filter(q => getKnowFlag(key + "-" + q.n)).length;
-      const total = ud.preguntas.length;
-      const pct = Math.round((known/total)*100);
-      const div = document.createElement("div");
-      div.className = "ud-card";
-      div.style.borderLeftColor = ud.color;
-      div.innerHTML = `
-        <div class="name">${ud.nombre}</div>
-        <div class="bar-bg"><div class="bar-fill" style="width:${pct}%; background:${ud.color}"></div></div>
-        <div class="nums"><span>${known}/${total}</span><span>${pct}%</span></div>
+      const tag = document.createElement("div");
+      tag.className = "q-tag";
+      tag.innerHTML = `
+        <span class="q-ud"><span class="ud-dot" style="background:${q.color}"></span>${q.udAbrev}</span>
+        <span class="q-num">Pregunta ${idx+1} de ${examQuestions.length} · #${q.n}</span>
       `;
-      udGridEl.appendChild(div);
+      card.appendChild(tag);
+
+      const ptext = document.createElement("div");
+      ptext.className = "q-text";
+      ptext.textContent = q.p;
+      card.appendChild(ptext);
+
+      const opts = document.createElement("div");
+      opts.className = "q-options";
+
+      q.options.forEach((opt, oi) => {
+        const optWrap = document.createElement("label");
+        optWrap.className = "opt";
+        optWrap.dataset.value = opt;
+
+        if(submitted){
+          if(opt === q.r) optWrap.classList.add("correct-opt");
+          else if(opt === chosen) optWrap.classList.add("wrong-opt");
+          optWrap.classList.add("locked");
+        } else if(chosen === opt){
+          optWrap.classList.add("selected");
+        }
+
+        optWrap.innerHTML = `
+          <span class="opt-letter">${letterFor(oi)}</span>
+          <span class="opt-text">${opt}</span>
+          <span class="opt-mark">${submitted ? (opt === q.r ? "✓" : (opt === chosen ? "✕" : "")) : ""}</span>
+        `;
+
+        if(!submitted){
+          optWrap.addEventListener("click", () => {
+            answers[q.id] = opt;
+            renderOptionsOnly(card, q);
+            renderSummary();
+            renderJumpNav();
+          });
+        }
+
+        opts.appendChild(optWrap);
+      });
+
+      card.appendChild(opts);
+
+      if(submitted){
+        const fb = document.createElement("div");
+        fb.className = "q-feedback";
+        if(isCorrect){
+          fb.innerHTML = `<span class="fb-ok">✓ Correcta</span>`;
+        } else if(chosen){
+          fb.innerHTML = `<span class="fb-bad">✕ Incorrecta</span> — Respuesta correcta: <strong>${q.r}</strong>`;
+        } else {
+          fb.innerHTML = `<span class="fb-blank">— Sin responder</span> — Respuesta correcta: <strong>${q.r}</strong>`;
+        }
+        card.appendChild(fb);
+      }
+
+      examForm.appendChild(card);
+
+      const jumpBtn = document.createElement("button");
+      jumpBtn.type = "button";
+      jumpBtn.className = "jump-btn";
+      jumpBtn.textContent = idx + 1;
+      jumpBtn.title = "Pregunta " + (idx+1);
+      jumpBtn.addEventListener("click", () => {
+        document.getElementById("q-" + q.id).scrollIntoView({behavior:"smooth", block:"center"});
+      });
+      jumpNav.appendChild(jumpBtn);
+    });
+
+    renderJumpNav();
+    applyFilter();
+  }
+
+  function renderOptionsOnly(card, q){
+    const opts = card.querySelectorAll(".opt");
+    opts.forEach(o => {
+      o.classList.toggle("selected", o.dataset.value === answers[q.id]);
     });
   }
 
-  // ---- Event wiring ----
-  card.addEventListener("click", flipCard);
-  card.addEventListener("keydown", (e) => {
-    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); flipCard(); }
-  });
-  card.setAttribute("tabindex", "0");
-  card.setAttribute("role", "button");
-  card.setAttribute("aria-label", "Tarjeta de estudio, pulsa para voltear");
-
-  $("#btnPrev").addEventListener("click", (e) => { e.stopPropagation(); goTo(pos - 1); });
-  $("#btnNext").addEventListener("click", (e) => { e.stopPropagation(); goTo(pos + 1); });
-  $("#btnShuffle").addEventListener("click", (e) => {
-    e.stopPropagation();
-    deck = shuffle(deck);
-    pos = 0;
-    renderCard();
-  });
-
-  $("#btnNo").addEventListener("click", (e) => {
-    e.stopPropagation();
-    const q = currentQ();
-    if(q){ setKnowFlag(q.id, false); }
-    advanceAfterAnswer();
-  });
-  $("#btnYes").addEventListener("click", (e) => {
-    e.stopPropagation();
-    const q = currentQ();
-    if(q){ setKnowFlag(q.id, true); }
-    advanceAfterAnswer();
-  });
-
-  function advanceAfterAnswer(){
-    renderProgress();
-    renderUdGrid();
-    if(mode === "dudas"){
-      // en modo dudas, la pregunta resuelta como "me la sé" sale de la cola
-      rebuildDeck(false);
-      if(pos >= deck.length) pos = Math.max(0, deck.length - 1);
-      renderCard();
-    } else {
-      if(pos < deck.length - 1){
-        goTo(pos + 1);
-      } else {
-        renderCard();
+  function renderJumpNav(){
+    const btns = jumpNav.querySelectorAll(".jump-btn");
+    btns.forEach((btn, idx) => {
+      const q = examQuestions[idx];
+      btn.classList.remove("done", "blank", "correct", "wrong");
+      if(submitted){
+        const chosen = answers[q.id];
+        if(chosen === q.r) btn.classList.add("correct");
+        else if(chosen) btn.classList.add("wrong");
+        else btn.classList.add("blank");
+      } else if(answers[q.id]){
+        btn.classList.add("done");
       }
+    });
+  }
+
+  function renderSummary(){
+    const total = examQuestions.length;
+    const answered = Object.keys(answers).length;
+    const pct = total ? Math.round((answered/total)*100) : 0;
+    progFill.style.width = pct + "%";
+    progText.textContent = `${answered} / ${total} respondidas`;
+
+    if(submitted){
+      const correct = examQuestions.filter(q => answers[q.id] === q.r).length;
+      const wrong = examQuestions.filter(q => answers[q.id] && answers[q.id] !== q.r).length;
+      const blank = total - correct - wrong;
+      const nota = total ? (correct / total * 10).toFixed(1) : "0.0";
+
+      resultsPanel.style.display = "flex";
+      resultsPanel.innerHTML = `
+        <div class="result-grade">
+          <div class="grade-num">${nota}</div>
+          <div class="grade-lbl">sobre 10</div>
+        </div>
+        <div class="result-breakdown">
+          <div class="rb correct"><span class="rb-num">${correct}</span><span class="rb-lbl">Correctas</span></div>
+          <div class="rb wrong"><span class="rb-num">${wrong}</span><span class="rb-lbl">Falladas</span></div>
+          <div class="rb blank"><span class="rb-num">${blank}</span><span class="rb-lbl">En blanco</span></div>
+          <div class="rb total"><span class="rb-num">${total}</span><span class="rb-lbl">Total</span></div>
+        </div>
+      `;
+    } else {
+      resultsPanel.style.display = "none";
     }
   }
 
-  document.querySelectorAll(".mode-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      mode = btn.dataset.mode;
-      showCardZoneNormal();
-      rebuildDeck(true);
+  function applyFilter(){
+    const cards = examForm.querySelectorAll(".q-card");
+    cards.forEach((card, idx) => {
+      const q = examQuestions[idx];
+      const chosen = answers[q.id];
+      let show = true;
+      if(activeFilter === "sinResponder") show = !chosen;
+      if(activeFilter === "falladas") show = submitted && chosen && chosen !== q.r;
+      card.style.display = show ? "" : "none";
     });
+  }
+
+  // ---- Filtros de revisión ----
+  filterChips.addEventListener("click", (e) => {
+    const chip = e.target.closest(".f-chip");
+    if(!chip) return;
+    filterChips.querySelectorAll(".f-chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeFilter = chip.dataset.filter;
+    applyFilter();
   });
 
-  // ---- Keyboard navigation ----
-  document.addEventListener("keydown", (e) => {
-    if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-    if(e.key === "ArrowRight"){ goTo(pos + 1); }
-    if(e.key === "ArrowLeft"){ goTo(pos - 1); }
+  // ---- Submit / restart ----
+  btnSubmit.addEventListener("click", () => {
+    const total = examQuestions.length;
+    const answered = Object.keys(answers).length;
+    if(answered < total){
+      const missing = total - answered;
+      const ok = confirm(`Te faltan ${missing} pregunta(s) por responder. ¿Quieres corregir el examen igualmente?`);
+      if(!ok) return;
+    }
+    submitted = true;
+    renderExam();
+    renderSummary();
+    btnSubmit.style.display = "none";
+    btnReview.style.display = "";
+    document.getElementById("filterBar").style.display = "block";
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  btnRestart.addEventListener("click", () => {
+    const ok = confirm("¿Seguro que quieres reiniciar el examen? Se perderán las respuestas actuales y se generará un nuevo orden de preguntas y opciones.");
+    if(!ok) return;
+    buildExam();
+    btnSubmit.style.display = "";
+    btnReview.style.display = "none";
+    document.getElementById("filterBar").style.display = "none";
+    activeFilter = "todas";
+    filterChips.querySelectorAll(".f-chip").forEach(c => c.classList.remove("active"));
+    filterChips.querySelector('[data-filter="todas"]').classList.add("active");
+    renderExam();
+    renderSummary();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  btnReview.addEventListener("click", () => {
+    document.getElementById("filterBar").scrollIntoView({behavior:"smooth", block:"start"});
   });
 
   // ---- Init ----
-  buildChips();
-  rebuildDeck(true);
+  buildExam();
+  renderExam();
+  renderSummary();
 
 })();
 
